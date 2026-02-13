@@ -16,12 +16,51 @@ app.use(cors({
   credentials: true
 }));
 
-// Database Connection
-mongoose.connect(process.env.MONGO_URI, {
-  serverSelectionTimeoutMS: 5000
-})
-  .then(() => console.log("✅ Connected to MongoDB!"))
-  .catch(err => console.error("❌ MongoDB Connection Error:", err));
+// --- MONGODB CONNECTION CACHING ---
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false, // Prevents the 'buffering timed out' error
+      serverSelectionTimeoutMS: 5000,
+    };
+
+    cached.promise = mongoose.connect(process.env.MONGO_URI, opts).then((mongooseInstance) => {
+      console.log("✅ MongoDB Connected Successfully");
+      return mongooseInstance;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
+}
+
+// Middleware to ensure DB is connected before handling any route
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("❌ Database Connection Error:", err);
+    res.status(500).json({ error: "Database connection failed" });
+  }
+});
+// ----------------------------------
 
 // Routes
 app.use('/', authRoutes);
@@ -31,13 +70,13 @@ app.get('/', (req, res) => {
   res.send('🚀 Backend is live and running on Vercel!');
 });
 
-// Start Server (only if running locally)
+// Start Server (Local Development)
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🚀 Server running locally on port ${PORT}`);
   });
 }
 
-// REQUIRED: Export the app for Vercel
+// REQUIRED: Export for Vercel
 module.exports = app;
