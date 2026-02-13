@@ -19,11 +19,16 @@ app.use(cors({
 }));
 
 
-mongoose.connect(process.env.MONGO_URI, {
-  serverSelectionTimeoutMS: 5000 
-})
-  .then(() => console.log("✅ Connected to MongoDB!"))
-  .catch(err => console.error("❌ MongoDB Connection Error:", err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ Connected!"))
+  .catch(err => console.error(err));
+
+app.get('/', (req, res) => res.send('🚀 Backend Live!'));
+
+if (require.main === module) {
+  app.listen(process.env.PORT || 5000);
+}
+
 // Routes
 app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
