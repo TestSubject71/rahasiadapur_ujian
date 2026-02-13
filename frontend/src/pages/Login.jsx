@@ -25,7 +25,7 @@ function Login() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1>🍳 Rahasia Dapur</h1>
+        <h1>Rahasia Dapur</h1>
         <h3>Login</h3>
         <form onSubmit={handleLogin}>
           <div style={styles.inputGroup}>

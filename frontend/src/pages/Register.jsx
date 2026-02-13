@@ -22,7 +22,7 @@ function Register() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2>📝 Register</h2>
+        <h2>Register</h2>
         <form onSubmit={handleRegister}>
           <div style={styles.inputGroup}>
             <label>Username:</label>
@@ -56,7 +56,7 @@ function Register() {
 
 // Simple Inline CSS
 const styles = {
-  container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f0f2f5' },
+  container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#fff3e0' },
   card: { backgroundColor: 'white', padding: '30px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', width: '300px', textAlign: 'center', color :'black' },
   inputGroup: { marginBottom: '15px', textAlign: 'left' },
   input: { width: '100%', padding: '8px', marginTop: '5px', borderRadius: '5px', border: '1px solid #ccc' },
