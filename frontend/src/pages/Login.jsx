@@ -10,13 +10,14 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', { username, password });
+      
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, { username, password });
       
       // Optional: Save user info if needed
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
       alert('Login Successful!');
-      navigate('/home'); // Redirect to Home Page
+      navigate('/home'); 
     } catch (error) {
       alert('Login Failed: ' + (error.response?.data?.message || error.message));
     }

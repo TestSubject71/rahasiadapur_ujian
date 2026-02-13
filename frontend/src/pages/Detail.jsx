@@ -8,19 +8,24 @@ function Detail() {
   const [recipe, setRecipe] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/recipes/${id}`)
-      .then(response => setRecipe(response.data))
+    // Debugging: Check if the URL is correct in the console
+    console.log("Fetching URL:", `${import.meta.env.VITE_API_URL}/recipes/${id}`);
+
+    axios.get(`${import.meta.env.VITE_API_URL}/recipes/${id}`)
+      .then(response => {
+        console.log("Data received:", response.data); // Debugging
+        setRecipe(response.data);
+      })
       .catch(error => console.error("Error:", error));
   }, [id]);
 
-  
   const getEmbedUrl = (url) => {
-    if (!url) return '';
+    if (!url) return null; // Return null instead of empty string
     try {
       if (url.includes('embed')) return url;
       const videoId = url.split('v=')[1]?.split('&')[0];
       return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-    } catch (e) { return url; }
+    } catch (e) { return null; }
   };
 
   if (!recipe) return <div style={{ textAlign: 'center', padding: '20px' }}>Loading Recipe...</div>;
@@ -41,15 +46,21 @@ function Detail() {
         <div style={styles.card}>
           <h1 style={styles.title}>{recipe.menuName}</h1>
 
-          {/* Video Section */}
-          <div style={styles.videoWrapper}>
-            <iframe 
-              src={getEmbedUrl(recipe.videoLink)} 
-              title={recipe.menuName}
-              style={styles.iframe}
-              allowFullScreen
-            ></iframe>
-          </div>
+          {/* Video Section - Only render if videoLink exists! */}
+          {recipe.videoLink && getEmbedUrl(recipe.videoLink) ? (
+            <div style={styles.videoWrapper}>
+              <iframe 
+                src={getEmbedUrl(recipe.videoLink)} 
+                title={recipe.menuName}
+                style={styles.iframe}
+                allowFullScreen
+              ></iframe>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+              (No video available for this recipe)
+            </div>
+          )}
 
           {/* Description Section */}
           <div style={styles.instructions}>
@@ -57,7 +68,7 @@ function Detail() {
               How to Cook
             </h3>
             <p style={{ whiteSpace: 'pre-line', color: '#555', lineHeight: '1.8' }}>
-              {recipe.description}
+              {recipe.description || "No instructions provided."}
             </p>
           </div>
         </div>
@@ -77,7 +88,7 @@ const styles = {
   },
   contentWrapper: {
     width: '100%',
-    maxWidth: '600px', // Narrower than Home for better reading experience
+    maxWidth: '600px',
   },
   navBar: {
     display: 'flex',
@@ -108,7 +119,7 @@ const styles = {
   },
   videoWrapper: {
     position: 'relative',
-    paddingBottom: '56.25%', // 16:9 Aspect Ratio
+    paddingBottom: '56.25%',
     height: 0,
     overflow: 'hidden',
     borderRadius: '10px',

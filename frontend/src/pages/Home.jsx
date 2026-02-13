@@ -7,8 +7,7 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Note: Use http://127.0.0.1:5000/recipes if localhost fails
-    axios.get('http://localhost:5000/recipes')
+    axios.get(`${import.meta.env.VITE_API_URL}/recipes`)
       .then(response => setRecipes(response.data))
       .catch(error => console.error("Error fetching data:", error));
   }, []);

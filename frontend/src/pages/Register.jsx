@@ -10,8 +10,7 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      // Send data to Backend
-      await axios.post('http://localhost:5000/register', { username, password });
+      await axios.post(`${import.meta.env.VITE_API_URL}/register`, { username, password });
       alert('Registration Successful! Please Login.');
       navigate('/'); // Redirect to Login Page
     } catch (error) {
