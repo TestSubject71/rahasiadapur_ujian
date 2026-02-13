@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-
 const authRoutes = require('./routes/auth');
 const recipeRoutes = require('./routes/recipes');
 
@@ -11,33 +10,28 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
 app.use(cors({
   origin: "*", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ Connected!"))
-  .catch(err => console.error(err));
-
-app.get('/', (req, res) => res.send('🚀 Backend Live!'));
-
-if (require.main === module) {
-  app.listen(process.env.PORT || 5000);
-}
+// Database Connection
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 5000
+})
+  .then(() => console.log("✅ Connected to MongoDB!"))
+  .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 // Routes
 app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
 
 app.get('/', (req, res) => {
-  res.send('🚀 Server is running on Vercel!');
+  res.send('🚀 Backend is live and running on Vercel!');
 });
 
-// Start Server 
+// Start Server (only if running locally)
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
@@ -45,5 +39,5 @@ if (require.main === module) {
   });
 }
 
-// Export for Vercel (REQUIRED)
+// REQUIRED: Export the app for Vercel
 module.exports = app;
