@@ -137,3 +137,27 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Dependencies (NEVER upload these)
+node_modules/
+*/node_modules/
+
+# Environment Variables (Security Risk!)
+.env
+.env.local
+backend/.env
+frontend/.env
+
+# Build Outputs (Vite creates these)
+dist/
+build/
+frontend/dist/
+
+# OS Junk files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
