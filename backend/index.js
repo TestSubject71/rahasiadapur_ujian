@@ -19,10 +19,11 @@ app.use(cors({
 }));
 
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 5000 
+})
   .then(() => console.log("✅ Connected to MongoDB!"))
   .catch(err => console.error("❌ MongoDB Connection Error:", err));
-
 // Routes
 app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
